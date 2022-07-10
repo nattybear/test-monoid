@@ -1,5 +1,6 @@
 module Main where
 
+import Control.Monad
 import Data.Monoid
 import Test.QuickCheck
 
@@ -16,11 +17,27 @@ monoidLeftIdentity a = (mempty <> a) == a
 monoidRightIdentity :: (Eq m, Monoid m) => m -> Bool
 monoidRightIdentity a = (a <> mempty) == a
 
-mli = monoidLeftIdentity
-mri = monoidRightIdentity
+data Bull = Fools
+          | Twoo
+          deriving (Eq, Show)
+
+instance Arbitrary Bull where
+  arbitrary = frequency [ (1, return Fools)
+                        , (1, return Twoo) ]
+
+instance Semigroup Bull where
+  _ <> _ = Fools
+
+instance Monoid Bull where
+  mempty = Fools
+
+type BullMappend = Bull -> Bull -> Bull -> Bool
 
 main :: IO ()
 main = do
-  quickCheck (monoidAssoc :: MA)
-  quickCheck (mli :: String -> Bool)
-  quickCheck (mri :: String -> Bool)
+  let ma  = monoidAssoc
+      mli = monoidLeftIdentity
+      mri = monoidRightIdentity
+  quickCheck (ma  :: BullMappend)
+  quickCheck (mli :: Bull -> Bool)
+  quickCheck (mri :: Bull -> Bool)
