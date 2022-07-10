@@ -10,5 +10,17 @@ type S  = String
 type B  = Bool
 type MA = S -> S -> S -> B
 
+monoidLeftIdentity :: (Eq m, Monoid m) => m -> Bool
+monoidLeftIdentity a = (mempty <> a) == a
+
+monoidRightIdentity :: (Eq m, Monoid m) => m -> Bool
+monoidRightIdentity a = (a <> mempty) == a
+
+mli = monoidLeftIdentity
+mri = monoidRightIdentity
+
 main :: IO ()
-main = quickCheck (monoidAssoc :: MA)
+main = do
+  quickCheck (monoidAssoc :: MA)
+  quickCheck (mli :: String -> Bool)
+  quickCheck (mri :: String -> Bool)
