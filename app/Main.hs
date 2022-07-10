@@ -1,9 +1,14 @@
-module Main where
+module Main
+  ( module First
+  , module Optional
+  , main
+  ) where
 
 import Bull
 import Control.Monad
 import Data.Monoid
 import First
+import Optional
 import Test.QuickCheck
 
 monoidAssoc :: (Eq m, Monoid m) => m -> m -> m -> Bool
